@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS get_recent_comments;
+DROP PROCEDURE IF EXISTS get_tag_recent_comments;
 
 DELIMITER ;;
-CREATE DEFINER=web@localhost PROCEDURE get_recent_comments(IN $tids VARCHAR(255), IN $limit INT)
+CREATE DEFINER=web@localhost PROCEDURE get_tag_recent_comments(IN $tids VARCHAR(20000), IN $limit INT)
     COMMENT 'get recent comments for a list of given tags'  
 BEGIN
 	IF LOCATE(',', $tids) = 0 THEN

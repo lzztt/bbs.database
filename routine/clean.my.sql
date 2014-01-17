@@ -36,6 +36,7 @@ BEGIN
 
     DELETE FROM users WHERE id IN (SELECT id FROM users_t);
     DELETE FROM nodes WHERE id IN (SELECT id FROM nodes_t);
+	DELETE FROM node_yellowpages WHERE id IN (SELECT id FROM nodes_t);
     DELETE FROM comments WHERE id IN (SELECT id FROM comments_t);
 	DELETE FROM pm USING priv_msgs AS pm JOIN users_t AS u ON (pm.from_uid = u.id OR pm.to_uid = u.id);
     DELETE FROM sessions WHERE uid IN (SELECT id FROM users_t);
