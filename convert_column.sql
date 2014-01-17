@@ -41,9 +41,19 @@ ALTER TABLE `nodes` CHANGE `nid` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `nodes` ADD INDEX(`create_time`);
 ALTER TABLE `priv_msgs` CHANGE `mid` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `sessions` CHANGE `sid` `id` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `sessions` CHANGE `mtime` `atime` INT(11) UNSIGNED NOT NULL;
+ALTER TABLE `sessions` CHANGE `data` `data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
 ALTER TABLE `tags` CHANGE `tid` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'tag id';
 ALTER TABLE `users` CHANGE `uid` `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `images` DROP `list`;
 ALTER TABLE `priv_msgs` DROP `subject`;
 ALTER TABLE `users` DROP `phpass`;
+
+ALTER TABLE `priv_msgs` ADD `from_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '0: deleted; 1: viewed' , ADD `to_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '0: deleted; 1: viewed; 2: new';
+UPDATE priv_msgs SET from_status = 0 WHERE IS_DELETED > 1;
+UPDATE priv_msgs SET to_status = 0 WHERE IS_DELETED%2 = 1;
+UPDATE priv_msgs SET to_status = 2 WHERE is_new = 1;
+ALTER TABLE `priv_msgs` CHANGE `to_status` `to_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '2' COMMENT '0: deleted; 1: viewed; 2: new';
+ALTER TABLE `priv_msgs` DROP `is_new`, DROP `is_deleted`, ADD INDEX(`from_status`), ADD INDEX(`to_status`);

@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS get_recent_nodes;
+DROP PROCEDURE IF EXISTS get_tag_recent_nodes;
 
 DELIMITER ;;
-CREATE DEFINER=web@localhost PROCEDURE get_recent_nodes(IN $tids VARCHAR(255), IN $limit INT)
+CREATE DEFINER=web@localhost PROCEDURE get_tag_recent_nodes(IN $tids VARCHAR(20000), IN $limit INT)
     COMMENT 'get recent nodes for a list of given tags'  
 BEGIN
 	IF LOCATE(',', $tids) = 0 THEN

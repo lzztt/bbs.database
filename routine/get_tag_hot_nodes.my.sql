@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS get_hot_nodes;
+DROP PROCEDURE IF EXISTS get_tag_hot_nodes;
 
 DELIMITER ;;
-CREATE DEFINER=web@localhost PROCEDURE get_hot_nodes(IN $tids VARCHAR(255), IN $time INT, IN $limit INT)
+CREATE DEFINER=web@localhost PROCEDURE get_tag_hot_nodes(IN $tids VARCHAR(20000), IN $time INT, IN $limit INT)
     COMMENT 'get recent hot nodes for a list of given tids'  
 BEGIN
 	IF LOCATE(',', $tids) = 0 THEN

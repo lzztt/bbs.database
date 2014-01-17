@@ -1,7 +1,7 @@
 DROP PROCEDURE IF EXISTS check_pm;
 
 DELIMITER ;;
-CREATE DEFINER=web@localhost PROCEDURE check_pm(IN $uid INT, IN $nmsg INT)
+CREATE DEFINER=web@localhost PROCEDURE check_pm(IN $uid INT, IN $limit INT)
     COMMENT 'check private messages of a user'
 BEGIN 
     SELECT
@@ -18,6 +18,6 @@ BEGIN
     ORDER BY
         id DESC
     LIMIT
-        $nmsg; 
+        $limit; 
 END ;;
 DELIMITER ;

@@ -1,7 +1,7 @@
-DROP PROCEDURE IF EXISTS get_forum_nodes;
+DROP PROCEDURE IF EXISTS get_tag_nodes_forum;
 
 DELIMITER ;;
-CREATE DEFINER=web@localhost PROCEDURE get_forum_nodes(IN $tid INT, IN $limit INT, IN $offset INT)
+CREATE DEFINER=web@localhost PROCEDURE get_tag_nodes_forum(IN $tid INT, IN $limit INT, IN $offset INT)
     COMMENT 'get latest node and comment info for a given forum'  
 BEGIN
 	DECLARE $done INT DEFAULT FALSE;
