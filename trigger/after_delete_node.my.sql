@@ -1,0 +1,8 @@
+DROP TRIGGER IF EXISTS after_delete_node;
+
+DELIMITER ;;
+CREATE DEFINER=web@localhost TRIGGER after_delete_node AFTER DELETE ON nodes FOR EACH ROW
+BEGIN
+	DELETE FROM images WHERE nid = OLD.id;
+END ;;
+DELIMITER ;

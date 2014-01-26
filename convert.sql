@@ -11,8 +11,6 @@ RENAME TABLE FFCount TO ff_counts;
 RENAME TABLE FFSubscriber TO ff_subscribers;
 RENAME TABLE Image TO images;
 RENAME TABLE ImageDeleted TO images_deleted;
-RENAME TABLE LotteryResult TO lottery_results;
-RENAME TABLE LotteryUser TO lottery_users;
 RENAME TABLE Mail TO mails;
 RENAME TABLE Moderator TO moderators;
 RENAME TABLE Node TO nodes;
