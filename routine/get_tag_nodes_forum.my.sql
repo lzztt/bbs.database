@@ -32,7 +32,7 @@ BEGIN
         SELECT n.id, n.title, n.weight, n.create_time, n.uid, u.username,
             IFNULL((SELECT MAX(create_time) FROM comments WHERE nid = n.id), n.create_time) AS comment_time
         FROM nodes AS n JOIN users AS u ON n.uid = u.id
-        WHERE (n.status > 0 AND n.tid = $tid AND u.status > 0) OR n.id IN (22860, 23200, 25295)
+        WHERE (n.status > 0 AND n.tid = $tid AND u.status > 0) OR n.id IN (22860, 23200, 25295, 42115)
         ORDER BY n.weight DESC, comment_time DESC 
         LIMIT $limit 
         OFFSET $offset;
