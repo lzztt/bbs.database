@@ -16,13 +16,61 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cache`
+-- Table structure for table `cache_event_listeners`
 --
 
-DROP TABLE IF EXISTS `cache`;
+DROP TABLE IF EXISTS `cache_event_listeners`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cache` (
+CREATE TABLE `cache_event_listeners` (
+  `eid` int(10) NOT NULL COMMENT 'event name id',
+  `oid` int(10) NOT NULL COMMENT 'trigger object id',
+  `lid` int(10) NOT NULL COMMENT 'listener name id',
+  KEY `eid` (`eid`,`oid`),
+  KEY `lid` (`lid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cache_event_listeners_austin`
+--
+
+DROP TABLE IF EXISTS `cache_event_listeners_austin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache_event_listeners_austin` (
+  `eid` int(10) NOT NULL COMMENT 'event name id',
+  `oid` int(10) NOT NULL COMMENT 'trigger object id',
+  `lid` int(10) NOT NULL COMMENT 'listener name id',
+  KEY `eid` (`eid`,`oid`),
+  KEY `lid` (`lid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cache_event_listeners_dallas`
+--
+
+DROP TABLE IF EXISTS `cache_event_listeners_dallas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache_event_listeners_dallas` (
+  `eid` int(10) NOT NULL COMMENT 'event name id',
+  `oid` int(10) NOT NULL COMMENT 'trigger object id',
+  `lid` int(10) NOT NULL COMMENT 'listener name id',
+  KEY `eid` (`eid`,`oid`),
+  KEY `lid` (`lid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cache_names`
+--
+
+DROP TABLE IF EXISTS `cache_names`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache_names` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'cache id',
   `name` varchar(255) NOT NULL COMMENT 'cache key / event name',
   PRIMARY KEY (`id`),
@@ -44,6 +92,36 @@ CREATE TABLE `cache_tree` (
   KEY `cid` (`cid`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cache_tree_austin`
+--
+
+DROP TABLE IF EXISTS `cache_tree_austin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache_tree_austin` (
+  `pid` int(10) NOT NULL COMMENT 'parent cache id',
+  `cid` int(10) NOT NULL COMMENT 'child cache id',
+  KEY `pid` (`pid`),
+  KEY `cid` (`cid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cache_tree_dallas`
+--
+
+DROP TABLE IF EXISTS `cache_tree_dallas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cache_tree_dallas` (
+  `pid` int(10) NOT NULL COMMENT 'parent cache id',
+  `cid` int(10) NOT NULL COMMENT 'child cache id',
+  KEY `pid` (`pid`),
+  KEY `cid` (`cid`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -54,4 +132,4 @@ CREATE TABLE `cache_tree` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-07-27 11:38:13
+-- Dump completed on 2014-08-29 12:42:06
