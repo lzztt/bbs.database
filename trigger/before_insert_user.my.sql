@@ -4,6 +4,12 @@ DELIMITER ;;
 CREATE DEFINER=web@localhost TRIGGER before_insert_user BEFORE INSERT ON users FOR EACH ROW
 BEGIN
     DECLARE $count INT DEFAULT NULL;
+
+    IF NEW.status = 0 THEN
+        INSERT INTO spammers (email, ip, time) VALUES (NEW.email, NEW.last_access_ip, NEW.create_time);
+        SIGNAL SQLSTATE '02101' SET MESSAGE_TEXT = 'spammer email detected';
+    END IF;
+
     SELECT COUNT(*) INTO $count FROM spammers WHERE email = NEW.email;
     IF $count > 0 THEN
         SIGNAL SQLSTATE '02101' SET MESSAGE_TEXT = 'spammer email detected';
