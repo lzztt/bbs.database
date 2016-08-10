@@ -7,6 +7,15 @@ BEGIN
     UPDATE users SET status = 0 WHERE id = $id;
     UPDATE nodes SET status = 0 WHERE uid = $id;
     DELETE FROM sessions WHERE uid = $id;
-    INSERT INTO spammers (email, ip, time) SELECT email, last_access_ip, UNIX_TIMESTAMP() FROM users WHERE id = $id;
+    set @now = UNIX_TIMESTAMP();
+    INSERT INTO spammers (email, ip, time) SELECT email, last_access_ip, @now FROM users WHERE id = $id;
+    
+    UPDATE node_complaints SET status = 2 WHERE uid = $id;
+
+    UPDATE users  AS u
+		JOIN ( SELECT reporter_uid AS uid, COUNT(*) AS score FROM node_complaints WHERE uid = $id AND time > @now -2592000 GROUP BY reporter_uid ) AS rs
+        ON u.id = rs.uid
+	SET u.points = u.points + rs.score
+    WHERE u.status > 0;
 END ;;
 DELIMITER ;
