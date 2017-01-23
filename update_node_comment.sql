@@ -15,5 +15,6 @@ DROP TRIGGER IF EXISTS before_update_node;
 
 UPDATE images SET cid = nid WHERE cid IS NULL;
 
-ALTER TABLE `comments` DROP ` new_id `;
+ALTER TABLE `comments` DROP `new_id`;
+ALTER TABLE `nodes` DROP `body`;
 
