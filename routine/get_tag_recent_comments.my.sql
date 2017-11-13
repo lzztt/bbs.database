@@ -2,18 +2,18 @@ DROP PROCEDURE IF EXISTS get_tag_recent_comments;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE get_tag_recent_comments(IN $tids VARCHAR(20000), IN $limit INT)
-    COMMENT 'get recent comments for a list of given tags'  
+    COMMENT 'get recent comments for a list of given tags'
 BEGIN
     IF LOCATE(',', $tids) = 0 THEN
-        SELECT c.nid, MAX(c.id) AS last_cid, n.title, COUNT(*) AS comment_count 
-        FROM comments AS c JOIN nodes AS n ON c.nid = n.id 
-        WHERE n.tid = CAST($tids AS UNSIGNED INTEGER) AND n.status = 1 
-        GROUP BY c.nid 
-        HAVING comment_count > 1
-        ORDER BY last_cid DESC 
+        SELECT c.nid, MAX(c.id) AS last_cid, n.title, COUNT(*) - 1 AS comment_count
+        FROM comments AS c JOIN nodes AS n ON c.nid = n.id
+        WHERE n.tid = CAST($tids AS UNSIGNED INTEGER) AND n.status = 1
+        GROUP BY c.nid
+        HAVING comment_count > 0
+        ORDER BY last_cid DESC
         LIMIT $limit;
     ELSE
-        SET @sql = CONCAT('SELECT c.nid, MAX(c.id) AS last_cid, n.title, COUNT(*) AS comment_count FROM comments AS c JOIN nodes AS n ON c.nid = n.id WHERE n.tid IN (', $tids, ') AND n.status = 1 GROUP BY c.nid HAVING comment_count > 1 ORDER BY last_cid DESC LIMIT ', $limit);
+        SET @sql = CONCAT('SELECT c.nid, MAX(c.id) AS last_cid, n.title, COUNT(*) - 1 AS comment_count FROM comments AS c JOIN nodes AS n ON c.nid = n.id WHERE n.tid IN (', $tids, ') AND n.status = 1 GROUP BY c.nid HAVING comment_count > 0 ORDER BY last_cid DESC LIMIT ', $limit);
         PREPARE stmt FROM @sql;
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
