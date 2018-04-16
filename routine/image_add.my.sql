@@ -5,6 +5,5 @@ CREATE DEFINER=web@localhost PROCEDURE image_add(In $nid INT, IN $cid INT, IN $n
     COMMENT 'add an image'  
 BEGIN
     INSERT INTO images (nid,cid,name,path,height,width,city_id) VALUES ($nid, $cid, $name, $path, $height, $width, $city_id);
-    DELETE FROM images_deleted WHERE path = $path;
 END ;;
 DELIMITER ;
