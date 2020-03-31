@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS update_view_count_single;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE update_view_count_single(IN $sid VARCHAR(32))
-    COMMENT 'update view count'  
+    COMMENT 'update view count'
 BEGIN
     DECLARE $count INT;
 

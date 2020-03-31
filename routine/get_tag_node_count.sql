@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS get_tag_node_count;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE get_tag_node_count(IN $tids VARCHAR(20000))
-    COMMENT 'get node count for a list of given tags'  
+    COMMENT 'get node count for a list of given tags'
 BEGIN
     IF LOCATE(',', $tids) = 0 THEN
         SELECT COUNT(*) FROM nodes WHERE tid = CAST($tids AS UNSIGNED INTEGER);

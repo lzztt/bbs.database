@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS delete_pm;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE delete_pm(IN $id INT, IN $uid INT)
-    COMMENT 'delete pm as a given user'  
+    COMMENT 'delete pm as a given user'
 BEGIN
     DECLARE $msg_id INT DEFAULT NULL;
     DECLARE $from_uid INT DEFAULT NULL;
@@ -17,17 +17,17 @@ BEGIN
     IF $id = $msg_id THEN
         UPDATE priv_msgs SET from_status = 0 WHERE msg_id = $id AND from_uid = $uid AND from_status > 0;
         UPDATE priv_msgs SET to_status = 0 WHERE msg_id = $id AND to_uid = $uid AND to_status > 0;
-    ELSEIF $uid = $from_uid THEN 
+    ELSEIF $uid = $from_uid THEN
         IF $from_status > 0 THEN
             UPDATE priv_msgs SET from_status = 0 WHERE id = $id;
         END IF;
-    ELSEIF $uid = $to_uid THEN 
+    ELSEIF $uid = $to_uid THEN
         IF $to_status > 0 THEN
             UPDATE priv_msgs SET to_status = 0 WHERE id = $id;
         END IF;
     ELSEIF $msg_id IS NULL THEN
         SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'message not found';
-    ELSE 
+    ELSE
         SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'uid need be either from_uid or to_uid';
     END IF;
 END ;;

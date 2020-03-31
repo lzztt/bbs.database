@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS read_session;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE read_session(IN $id VARCHAR(32), IN $atime INT)
-    COMMENT 'read session data'  
+    COMMENT 'read session data'
 BEGIN
     SELECT SQL_CALC_FOUND_ROWS data FROM sessions WHERE id = $id LIMIT 1;
     IF FOUND_ROWS() < 1 THEN

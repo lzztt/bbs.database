@@ -23,7 +23,7 @@ BEGIN
     TRUNCATE cache_event_listeners_dallas;
     TRUNCATE cache_tree_austin;
     TRUNCATE cache_event_listeners_austin;
-    
+
     INSERT INTO cache_names (id, name) VALUES (1, 'cache.enabled');
 END ;;
 DELIMITER ;
