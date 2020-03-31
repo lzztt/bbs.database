@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS get_tag_tree;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE get_tag_tree(IN $tid INT)
-    COMMENT 'clean houstonbbs database tables'  
+    COMMENT 'clean houstonbbs database tables'
 BEGIN
     DECLARE $lvl INT DEFAULT NULL;
     DECLARE $cnt INT DEFAULT NULL;
@@ -25,12 +25,12 @@ BEGIN
     SET $lvl = 0;
     INSERT INTO tags_t SELECT id, name, description, parent, weight, $lvl FROM tags WHERE id = $tid  LIMIT 1;
 
-    REPEAT        
+    REPEAT
         TRUNCATE TABLE ids_t;
         INSERT INTO ids_t SELECT id FROM tags_t WHERE level = $lvl GROUP BY id;
         SET $lvl = $lvl + 1;
-        INSERT INTO tags_t SELECT id, name, description, parent, weight, $lvl 
-            FROM tags 
+        INSERT INTO tags_t SELECT id, name, description, parent, weight, $lvl
+            FROM tags
             WHERE parent IN (SELECT id FROM ids_t)
             ORDER BY parent, weight;
         SELECT ROW_COUNT() INTO $cnt;

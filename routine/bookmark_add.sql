@@ -2,7 +2,7 @@ DROP PROCEDURE IF EXISTS bookmark_add;
 
 DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE bookmark_add(IN $uid INT, IN $nid INT)
-    COMMENT 'add a bookmark'  
+    COMMENT 'add a bookmark'
 BEGIN
 	DECLARE $count INT DEFAULT NULL;
 	SELECT COUNT(*) INTO $count FROM bookmarks WHERE uid=$uid AND nid=$nid;
