@@ -16,7 +16,7 @@ BEGIN
         level int(10) unsigned,
         PRIMARY KEY (id),
         KEY level (level)
-    ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
     CREATE TEMPORARY TABLE ids_t (
         id int(10) unsigned,
         PRIMARY KEY (id)

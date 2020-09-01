@@ -10,7 +10,7 @@ BEGIN
         start_time int(11) unsigned,
         title varchar(255),
         class varchar(63)
-    ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
 
     INSERT INTO activities_t
         SELECT a.nid, a.start_time, n.title, IF(a.start_time < $now, "now", "future") AS class

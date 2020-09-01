@@ -12,7 +12,7 @@ BEGIN
         name varchar(60),
         description varchar(255),
         parent int(10) unsigned
-    ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
 
     REPEAT
         INSERT INTO tags_t SELECT id, name, description, parent FROM tags WHERE id = $tid  LIMIT 1;

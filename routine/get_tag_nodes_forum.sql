@@ -26,7 +26,7 @@ BEGIN
         commenter_name varchar(60),
         comment_count int(10) unsigned DEFAULT 0,
         PRIMARY KEY (id)
-    ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
 
     INSERT INTO nodes_t (id, title, weight, create_time, creater_uid, creater_name, comment_time)
         SELECT n.id, n.title, n.weight, n.create_time, n.uid, u.username,
