@@ -4,14 +4,14 @@ DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE get_tag_nodes_forum(IN $city_id INT, IN $tid INT, IN $limit INT, IN $offset INT)
     COMMENT 'get latest node and comment info for a given forum'
 BEGIN
-    DECLARE $done INT DEFAULT FALSE;
+    -- DECLARE $done INT DEFAULT FALSE;
     DECLARE    $nid INT;
     DECLARE    $create_time INT;
     DECLARE    $comment_time INT;
     DECLARE    $cid INT;
     DECLARE $count INT;
-    DECLARE $cur CURSOR FOR SELECT id, create_time, comment_time FROM nodes_t;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET $done = TRUE;
+    -- DECLARE $cur CURSOR FOR SELECT id, create_time, comment_time FROM nodes_t;
+    -- DECLARE CONTINUE HANDLER FOR NOT FOUND SET $done = TRUE;
 
     DROP TEMPORARY TABLE IF EXISTS nodes_t;
     CREATE TEMPORARY TABLE nodes_t (
@@ -37,22 +37,22 @@ BEGIN
         LIMIT $limit
         OFFSET $offset;
 
-    OPEN $cur;
-    FETCH $cur INTO $nid, $create_time, $comment_time;
+    -- OPEN $cur;
+    -- FETCH $cur INTO $nid, $create_time, $comment_time;
 
-    WHILE NOT $done DO
-        IF $comment_time = $create_time THEN
-            UPDATE nodes_t SET comment_count = 0, comment_time = NULL WHERE id = $nid;
-        ELSE
-            SELECT MAX(id), COUNT(*) - 1 INTO $cid, $count FROM comments WHERE nid = $nid;
-            UPDATE nodes_t AS n, (SELECT uid, (SELECT username FROM users WHERE id = comments.uid LIMIT 1) AS username FROM comments WHERE id = $cid) AS c
-            SET n.commenter_uid = c.uid, n.commenter_name = c.username, n.comment_count = $count
-            WHERE n.id = $nid;
-        END IF;
-        FETCH $cur INTO $nid, $create_time, $comment_time;
-    END WHILE;
+    -- WHILE NOT $done DO
+    --     IF $comment_time = $create_time THEN
+    --         UPDATE nodes_t SET comment_count = 0, comment_time = NULL WHERE id = $nid;
+    --     ELSE
+    --         SELECT MAX(id), COUNT(*) - 1 INTO $cid, $count FROM comments WHERE nid = $nid;
+    --         UPDATE nodes_t AS n, (SELECT uid, (SELECT username FROM users WHERE id = comments.uid LIMIT 1) AS username FROM comments WHERE id = $cid) AS c
+    --         SET n.commenter_uid = c.uid, n.commenter_name = c.username, n.comment_count = $count
+    --         WHERE n.id = $nid;
+    --     END IF;
+    --     FETCH $cur INTO $nid, $create_time, $comment_time;
+    -- END WHILE;
 
-    CLOSE $cur;
+    -- CLOSE $cur;
 
     SELECT * FROM nodes_t;
     DROP TEMPORARY TABLE nodes_t;
