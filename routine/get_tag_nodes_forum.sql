@@ -4,20 +4,13 @@ DELIMITER ;;
 CREATE DEFINER=web@localhost PROCEDURE get_tag_nodes_forum(IN $city_id INT, IN $tid INT, IN $limit INT, IN $offset INT)
     COMMENT 'get latest node and comment info for a given forum'
 BEGIN
-    -- DECLARE $done INT DEFAULT FALSE;
-    DECLARE    $nid INT;
-    DECLARE    $create_time INT;
-    DECLARE    $comment_time INT;
-    DECLARE    $cid INT;
-    DECLARE $count INT;
-    -- DECLARE $cur CURSOR FOR SELECT id, create_time, comment_time FROM nodes_t;
-    -- DECLARE CONTINUE HANDLER FOR NOT FOUND SET $done = TRUE;
+    DECLARE    $count INT;
 
     DROP TEMPORARY TABLE IF EXISTS nodes_t;
     CREATE TEMPORARY TABLE nodes_t (
         id int(10) unsigned,
         title varchar(255),
-        weight tinyint(3),
+        weight int(8),
         create_time int(11) unsigned,
         creater_uid int(10) unsigned,
         creater_name varchar(60),
@@ -28,31 +21,61 @@ BEGIN
         PRIMARY KEY (id)
     ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
 
-    INSERT INTO nodes_t (id, title, weight, create_time, creater_uid, creater_name, comment_time)
-        SELECT n.id, n.title, n.weight, n.create_time, n.uid, u.username,
-            IFNULL((SELECT MAX(create_time) FROM comments WHERE nid = n.id), n.create_time) AS comment_time
-        FROM nodes AS n JOIN users AS u ON n.uid = u.id
-        WHERE (n.status > 0 AND n.tid = $tid AND u.status > 0) OR n.id IN (SELECT nid FROM node_sticky WHERE cid = $city_id)
-        ORDER BY n.weight DESC, comment_time DESC
+    IF $offset = 0 THEN
+        INSERT INTO nodes_t (id, title, create_time, creater_uid, comment_time, weight)
+        SELECT n.id, n.title, n.create_time, n.uid, n.last_comment_time, IF(ns.cid IS NULL, ns.weight, ns.cid * 100 + ns.weight) AS w
+        FROM node_sticky ns JOIN nodes n ON ns.nid = n.id
+        WHERE (ns.tid = $tid OR ns.cid = $city_id) AND n.status > 0
+        ORDER BY w DESC;
+
+        SELECT $limit - ROW_COUNT() INTO $count;
+
+        INSERT INTO nodes_t (id, title, create_time, creater_uid, comment_time, weight)
+        SELECT n.id, n.title, n.create_time, n.uid, n.last_comment_time, 0
+        FROM nodes n
+        WHERE n.tid = $tid AND n.status > 0 AND n.id NOT IN (SELECT id FROM nodes_t)
+        ORDER BY last_comment_time DESC
+        LIMIT $count;
+    ELSE
+        SELECT $offset - COUNT(*) INTO $count
+        FROM node_sticky ns JOIN nodes n ON ns.nid = n.id
+        WHERE (ns.tid = 8 OR ns.cid = 1) AND n.status > 0;
+
+        INSERT INTO nodes_t (id, title, create_time, creater_uid, comment_time, weight)
+        SELECT n.id, n.title, n.create_time, n.uid, n.last_comment_time, 0
+        FROM nodes n
+        WHERE n.tid = $tid AND n.status > 0
+        ORDER BY last_comment_time DESC
         LIMIT $limit
-        OFFSET $offset;
+        OFFSET $count;
+    END IF;
 
-    -- OPEN $cur;
-    -- FETCH $cur INTO $nid, $create_time, $comment_time;
+    UPDATE nodes_t, (
+        SELECT nid, uid,
+            COUNT(*) OVER (PARTITION BY nid) AS count,
+            ROW_NUMBER() OVER (PARTITION BY nid ORDER BY id DESC) AS rn
+        FROM comments
+        WHERE nid IN (SELECT id FROM nodes_t)
+    ) AS t
+    SET nodes_t.commenter_uid = t.uid,
+        nodes_t.comment_count = t.count - 1
+    WHERE nodes_t.id = t.nid AND t.rn = 1;
 
-    -- WHILE NOT $done DO
-    --     IF $comment_time = $create_time THEN
-    --         UPDATE nodes_t SET comment_count = 0, comment_time = NULL WHERE id = $nid;
-    --     ELSE
-    --         SELECT MAX(id), COUNT(*) - 1 INTO $cid, $count FROM comments WHERE nid = $nid;
-    --         UPDATE nodes_t AS n, (SELECT uid, (SELECT username FROM users WHERE id = comments.uid LIMIT 1) AS username FROM comments WHERE id = $cid) AS c
-    --         SET n.commenter_uid = c.uid, n.commenter_name = c.username, n.comment_count = $count
-    --         WHERE n.id = $nid;
-    --     END IF;
-    --     FETCH $cur INTO $nid, $create_time, $comment_time;
-    -- END WHILE;
+    UPDATE nodes_t, (
+        SELECT id, username
+        FROM users
+        WHERE id IN (SELECT creater_uid FROM nodes_t)
+    ) AS t
+    SET nodes_t.creater_name = t.username
+    WHERE nodes_t.creater_uid = t.id;
 
-    -- CLOSE $cur;
+    UPDATE nodes_t, (
+        SELECT id, username
+        FROM users
+        WHERE id IN (SELECT commenter_uid FROM nodes_t)
+    ) AS t
+    SET nodes_t.commenter_name = t.username
+    WHERE nodes_t.commenter_uid = t.id;
 
     SELECT * FROM nodes_t;
     DROP TEMPORARY TABLE nodes_t;
