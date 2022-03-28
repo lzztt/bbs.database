@@ -36,7 +36,7 @@ BEGIN
     ELSE
         SELECT $offset - COUNT(*) INTO $count
         FROM node_sticky ns JOIN nodes n ON ns.nid = n.id
-        WHERE (ns.tid = 8 OR ns.cid = 1) AND n.status > 0;
+        WHERE (ns.tid = $tid OR ns.cid = $city_id) AND n.status > 0;
 
         INSERT INTO nodes_t (id, title, create_time, creater_uid, weight)
         SELECT n.id, n.title, n.create_time, n.uid, 0
