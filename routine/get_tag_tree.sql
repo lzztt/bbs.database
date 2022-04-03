@@ -10,7 +10,6 @@ BEGIN
     CREATE TEMPORARY TABLE tags_t (
         id int(10) unsigned,
         name varchar(60),
-        description varchar(255),
         parent int(10) unsigned,
         weight int(10) unsigned,
         level int(10) unsigned,
@@ -23,13 +22,13 @@ BEGIN
     ) ENGINE=MEMORY;
 
     SET $lvl = 0;
-    INSERT INTO tags_t SELECT id, name, description, parent, weight, $lvl FROM tags WHERE id = $tid  LIMIT 1;
+    INSERT INTO tags_t SELECT id, name, parent, weight, $lvl FROM tags WHERE id = $tid  LIMIT 1;
 
     REPEAT
         TRUNCATE TABLE ids_t;
         INSERT INTO ids_t SELECT id FROM tags_t WHERE level = $lvl GROUP BY id;
         SET $lvl = $lvl + 1;
-        INSERT INTO tags_t SELECT id, name, description, parent, weight, $lvl
+        INSERT INTO tags_t SELECT id, name, parent, weight, $lvl
             FROM tags
             WHERE parent IN (SELECT id FROM ids_t)
             ORDER BY parent, weight;
