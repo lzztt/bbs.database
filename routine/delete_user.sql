@@ -7,7 +7,7 @@ BEGIN
     UPDATE users SET status = 0 WHERE id = $id;
     UPDATE nodes SET status = 0 WHERE uid = $id;
     set @now = UNIX_TIMESTAMP();
-    INSERT INTO spammers (email, ip, time) SELECT email, last_access_ip, @now FROM users WHERE id = $id;
+    INSERT INTO spammers (email, time) SELECT email, @now FROM users WHERE id = $id;
 
     UPDATE node_complaints SET status = 2 WHERE uid = $id;
 

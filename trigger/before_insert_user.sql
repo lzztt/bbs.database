@@ -6,7 +6,7 @@ BEGIN
     DECLARE $count INT DEFAULT NULL;
 
     IF NEW.status = 0 THEN
-        INSERT INTO spammers (email, ip, time) VALUES (NEW.email, NEW.last_access_ip, NEW.create_time);
+        INSERT INTO spammers (email, time) VALUES (NEW.email, NEW.create_time);
         SIGNAL SQLSTATE '02101' SET MESSAGE_TEXT = '此邮箱没有通过系统的安全检测。';
     END IF;
 
